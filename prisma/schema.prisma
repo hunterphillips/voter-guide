@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ElectionType {
+  PRIMARY
+  GENERAL
+  SPECIAL_PRIMARY
+  SPECIAL_GENERAL
+  RUNOFF
+}
+
+enum Party {
+  R
+  D
+  I
+  OTHER
+}
+
+enum Stance {
+  SUPPORT
+  OPPOSE
+  MIXED
+  UNSPECIFIED
+}
+
+enum EndorserType {
+  PERSON
+  ORG
+  MEDIA
+  PAC
+  OTHER
+}
+
+model City {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  state     String    @db.VarChar(4)
+  county    String?
+  lat       Float?
+  lng       Float?
+  slug      String    @unique
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  elections Election[]
+
+  @@index([name, state])
+}
+
+model Election {
+  id                    String        @id @default(uuid()) @db.Uuid
+  cityId                String        @db.Uuid
+  title                 String
+  shortDescription      String
+  electionDate          DateTime      @db.Date
+  electionType          ElectionType
+  registrationDeadline  DateTime?     @db.Date
+  earlyVotingStart      DateTime?     @db.Date
+  earlyVotingEnd        DateTime?     @db.Date
+  absenteeDeadline      DateTime?     @db.Date
+  slug                  String
+  isActive              Boolean       @default(true)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  city                  City          @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  candidates            Candidate[]
+
+  @@unique([cityId, slug])
+}
+
+model Candidate {
+  id                  String                     @id @default(uuid()) @db.Uuid
+  electionId          String                     @db.Uuid
+  fullName            String
+  party               Party
+  ballotName          String?
+  incumbent           Boolean                    @default(false)
+  websiteUrl          String?
+  photoUrl            String?
+  residenceCity       String?
+  occupation          String?
+  summaryBio          String?
+  displayOrder        Int                        @default(0)
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+  election            Election                   @relation(fields: [electionId], references: [id], onDelete: Cascade)
+  issuePositions      CandidateIssuePosition[]
+  endorsements        Endorsement[]
+}
+
+model Issue {
+  id                  String                     @id @default(uuid()) @db.Uuid
+  slug                String                     @unique
+  name                String
+  category            String
+  displayOrder        Int                        @default(0)
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+  candidatePositions  CandidateIssuePosition[]
+}
+
+model CandidateIssuePosition {
+  id              String    @id @default(uuid()) @db.Uuid
+  candidateId     String    @db.Uuid
+  issueId         String    @db.Uuid
+  positionSummary String    @db.Text
+  evidenceUrl     String?
+  stance          Stance    @default(UNSPECIFIED)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  candidate       Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  issue           Issue     @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, issueId])
+}
+
+model Endorsement {
+  id            String        @id @default(uuid()) @db.Uuid
+  candidateId   String        @db.Uuid
+  endorserName  String
+  endorserType  EndorserType
+  quote         String?
+  sourceUrl     String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  candidate     Candidate     @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
