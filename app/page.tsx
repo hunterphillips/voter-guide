@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import CityTypeahead from '@/components/search/CityTypeahead'
 import StateDropdown from '@/components/search/StateDropdown'
+import FeaturedElections from '@/components/elections/FeaturedElections'
 
 export default function Home() {
   const router = useRouter()
@@ -77,6 +78,8 @@ export default function Home() {
             </p>
           </div>
         </div>
+
+        <FeaturedElections />
       </div>
     </div>
   )

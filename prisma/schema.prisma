@@ -65,6 +65,7 @@ model Election {
   earlyVotingEnd        DateTime?     @db.Date
   absenteeDeadline      DateTime?     @db.Date
   slug                  String
+  significanceRank      Int?          @default(50)
   isActive              Boolean       @default(true)
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
