@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { apiRateLimit, getClientIP, createRateLimitResponse } from '@/lib/ratelimit'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ citySlug: string; electionSlug: string }> }
 ) {
   try {
+    // Rate limiting
+    const ip = getClientIP(request)
+    const { success } = await apiRateLimit.limit(ip)
+    
+    if (!success) {
+      return createRateLimitResponse()
+    }
     const { citySlug, electionSlug } = await params
     const city = await prisma.city.findUnique({
       where: { slug: citySlug, isActive: true },

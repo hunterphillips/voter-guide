@@ -1,8 +1,16 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { apiRateLimit, getClientIP, createRateLimitResponse } from '@/lib/ratelimit'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Rate limiting
+    const ip = getClientIP(request)
+    const { success } = await apiRateLimit.limit(ip)
+    
+    if (!success) {
+      return createRateLimitResponse()
+    }
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 

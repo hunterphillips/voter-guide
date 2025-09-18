@@ -71,47 +71,29 @@ function getPartyName(party: string): string {
   }
 }
 
-function getStanceColor(stance: string): string {
-  switch (stance) {
-    case 'support':
-      return 'text-green-300';
-    case 'oppose':
-      return 'text-red-300';
-    case 'mixed':
-      return 'text-yellow-300';
-    default:
-      return 'text-slate-300';
-  }
-}
-
 function getIssueIcon(issueName: string): string {
   const name = issueName.toLowerCase();
 
-  if (name.includes('economy') || name.includes('tax')) return '💰';
-  if (name.includes('healthcare') || name.includes('health')) return '🏥';
-  if (name.includes('education') || name.includes('school')) return '🎓';
-  if (name.includes('reproductive') || name.includes('abortion')) return '🤱';
-  if (
-    name.includes('safety') ||
-    name.includes('veteran') ||
-    name.includes('police')
-  )
-    return '🛡️';
-  if (name.includes('immigration') || name.includes('border')) return '🛂';
-  if (name.includes('environment') || name.includes('climate')) return '🌍';
-  if (name.includes('housing')) return '🏠';
-  if (name.includes('transportation') || name.includes('infrastructure'))
-    return '🚗';
-  if (
-    name.includes('justice') ||
-    name.includes('criminal') ||
-    name.includes('reform')
-  )
-    return '⚖️';
-  if (name.includes('foreign') || name.includes('defense')) return '🌐';
-  if (name.includes('civil') || name.includes('rights')) return '✊';
+  const iconMap = [
+    { keywords: ['economy', 'tax'], icon: '💰' },
+    { keywords: ['healthcare', 'health'], icon: '🏥' },
+    { keywords: ['education', 'school'], icon: '🎓' },
+    { keywords: ['reproductive', 'abortion'], icon: '🤱' },
+    { keywords: ['safety', 'veteran', 'police'], icon: '🛡️' },
+    { keywords: ['immigration', 'border'], icon: '🛂' },
+    { keywords: ['environment', 'climate'], icon: '🌍' },
+    { keywords: ['housing'], icon: '🏠' },
+    { keywords: ['transportation', 'infrastructure'], icon: '🚗' },
+    { keywords: ['justice', 'criminal', 'reform'], icon: '⚖️' },
+    { keywords: ['foreign', 'defense'], icon: '🌐' },
+    { keywords: ['civil', 'rights'], icon: '✊' },
+  ];
 
-  return '📋'; // Default icon for other issues
+  return (
+    iconMap.find(({ keywords }) =>
+      keywords.some((keyword) => name.includes(keyword))
+    )?.icon ?? '📋'
+  );
 }
 
 export default function CandidateComparisonTable({

@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { apiRateLimit, getClientIP, createRateLimitResponse } from '@/lib/ratelimit'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ citySlug: string }> }
 ) {
   try {
+    // Rate limiting
+    const ip = getClientIP(request)
+    const { success } = await apiRateLimit.limit(ip)
+    
+    if (!success) {
+      return createRateLimitResponse()
+    }
     const { citySlug } = await params
     const searchParams = request.nextUrl.searchParams
     const includePast = searchParams.get('includePast') === 'true'
