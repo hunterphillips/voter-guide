@@ -45,9 +45,9 @@ function isUpcoming(dateString: string): boolean {
 export default function ElectionList({ citySlug, elections }: ElectionListProps) {
   if (elections.length === 0) {
     return (
-      <div className="text-center py-12">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No upcoming elections</h3>
-        <p className="text-gray-600">Check back later for new elections in your area.</p>
+      <div className="text-center py-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl">
+        <h3 className="text-lg font-medium text-white mb-2">No upcoming elections</h3>
+        <p className="text-slate-300">Check back later for new elections in your area.</p>
       </div>
     )
   }
@@ -57,47 +57,47 @@ export default function ElectionList({ citySlug, elections }: ElectionListProps)
       {elections.map((election) => (
         <div
           key={election.slug}
-          className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg shadow-2xl hover:bg-white/10 transition-all"
         >
           <div className="p-6">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h3 className="text-xl font-semibold text-gray-900">
+                  <h3 className="text-xl font-semibold text-white">
                     <Link
                       href={`/c/${citySlug}/e/${election.slug}`}
-                      className="hover:text-blue-600 transition-colors"
+                      className="hover:text-blue-400 transition-colors"
                     >
                       {election.title}
                     </Link>
                   </h3>
                   <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                     isUpcoming(election.electionDate)
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-green-500/20 text-green-300 border border-green-400/30'
+                      : 'bg-slate-500/20 text-slate-300 border border-slate-400/30'
                   }`}>
                     {formatElectionType(election.electionType)}
                   </span>
                 </div>
-                <p className="text-gray-600 mb-4">{election.shortDescription}</p>
+                <p className="text-slate-300 mb-4">{election.shortDescription}</p>
                 
-                <div className="text-sm text-gray-500 space-y-1">
+                <div className="text-sm text-slate-400 space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">Election Date:</span>
-                    <span className="text-gray-900 font-medium">{formatDate(election.electionDate)}</span>
+                    <span className="text-white font-medium">{formatDate(election.electionDate)}</span>
                   </div>
                   
                   {election.keyDates.registrationDeadline && (
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Registration Deadline:</span>
-                      <span>{formatDate(election.keyDates.registrationDeadline)}</span>
+                      <span className="text-slate-300">{formatDate(election.keyDates.registrationDeadline)}</span>
                     </div>
                   )}
                   
                   {election.keyDates.earlyVotingStart && election.keyDates.earlyVotingEnd && (
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Early Voting:</span>
-                      <span>
+                      <span className="text-slate-300">
                         {formatDate(election.keyDates.earlyVotingStart)} - {formatDate(election.keyDates.earlyVotingEnd)}
                       </span>
                     </div>
@@ -106,7 +106,7 @@ export default function ElectionList({ citySlug, elections }: ElectionListProps)
                   {election.keyDates.absenteeDeadline && (
                     <div className="flex items-center gap-2">
                       <span className="font-medium">Absentee Deadline:</span>
-                      <span>{formatDate(election.keyDates.absenteeDeadline)}</span>
+                      <span className="text-slate-300">{formatDate(election.keyDates.absenteeDeadline)}</span>
                     </div>
                   )}
                 </div>
@@ -114,7 +114,7 @@ export default function ElectionList({ citySlug, elections }: ElectionListProps)
               
               <Link
                 href={`/c/${citySlug}/e/${election.slug}`}
-                className="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                className="ml-6 inline-flex items-center px-4 py-2 border border-blue-500/20 text-sm font-medium rounded-lg text-white bg-blue-500/20 backdrop-blur-sm hover:bg-blue-500/30 transition-colors"
               >
                 View Candidates
               </Link>

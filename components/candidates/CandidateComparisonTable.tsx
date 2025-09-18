@@ -48,13 +48,13 @@ interface CandidateComparisonTableProps {
 function getPartyColor(party: string): string {
   switch (party) {
     case 'R':
-      return 'bg-red-100 text-red-800';
+      return 'bg-red-500/20 text-red-300 border border-red-400/30';
     case 'D':
-      return 'bg-blue-100 text-blue-800';
+      return 'bg-blue-500/20 text-blue-300 border border-blue-400/30';
     case 'I':
-      return 'bg-green-100 text-green-800';
+      return 'bg-green-500/20 text-green-300 border border-green-400/30';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-slate-500/20 text-slate-300 border border-slate-400/30';
   }
 }
 
@@ -74,14 +74,44 @@ function getPartyName(party: string): string {
 function getStanceColor(stance: string): string {
   switch (stance) {
     case 'support':
-      return 'text-green-700';
+      return 'text-green-300';
     case 'oppose':
-      return 'text-red-700';
+      return 'text-red-300';
     case 'mixed':
-      return 'text-yellow-700';
+      return 'text-yellow-300';
     default:
-      return 'text-gray-600';
+      return 'text-slate-300';
   }
+}
+
+function getIssueIcon(issueName: string): string {
+  const name = issueName.toLowerCase();
+
+  if (name.includes('economy') || name.includes('tax')) return '💰';
+  if (name.includes('healthcare') || name.includes('health')) return '🏥';
+  if (name.includes('education') || name.includes('school')) return '🎓';
+  if (name.includes('reproductive') || name.includes('abortion')) return '🤱';
+  if (
+    name.includes('safety') ||
+    name.includes('veteran') ||
+    name.includes('police')
+  )
+    return '🛡️';
+  if (name.includes('immigration') || name.includes('border')) return '🛂';
+  if (name.includes('environment') || name.includes('climate')) return '🌍';
+  if (name.includes('housing')) return '🏠';
+  if (name.includes('transportation') || name.includes('infrastructure'))
+    return '🚗';
+  if (
+    name.includes('justice') ||
+    name.includes('criminal') ||
+    name.includes('reform')
+  )
+    return '⚖️';
+  if (name.includes('foreign') || name.includes('defense')) return '🌐';
+  if (name.includes('civil') || name.includes('rights')) return '✊';
+
+  return '📋'; // Default icon for other issues
 }
 
 export default function CandidateComparisonTable({
@@ -105,11 +135,11 @@ export default function CandidateComparisonTable({
 
   if (candidates.length === 0) {
     return (
-      <div className="text-center py-12">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+      <div className="text-center py-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl">
+        <h3 className="text-lg font-medium text-white mb-2">
           No candidates found
         </h3>
-        <p className="text-gray-600">
+        <p className="text-slate-300">
           Candidate information is not yet available for this election.
         </p>
       </div>
@@ -125,7 +155,7 @@ export default function CandidateComparisonTable({
         return (
           <div
             key={candidate.id}
-            className="bg-white border border-gray-200 rounded-lg shadow-sm"
+            className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg shadow-2xl"
           >
             {/* Header section - always visible */}
             <div className="p-4">
@@ -139,8 +169,8 @@ export default function CandidateComparisonTable({
                     className="w-16 h-16 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-xl font-medium text-gray-600">
+                  <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
+                    <span className="text-xl font-medium text-white">
                       {candidate.fullName
                         .split(' ')
                         .map((n) => n[0])
@@ -150,11 +180,11 @@ export default function CandidateComparisonTable({
                 )}
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-white">
                       {candidate.fullName}
                     </h3>
                     {candidate.incumbent && (
-                      <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+                      <span className="text-xs px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded-full border border-yellow-400/30">
                         Incumbent
                       </span>
                     )}
@@ -168,13 +198,13 @@ export default function CandidateComparisonTable({
                       {getPartyName(candidate.party)}
                     </span>
                     {candidate.occupation && (
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-slate-300">
                         {candidate.occupation}
                       </span>
                     )}
                   </div>
                   {candidate.summaryBio && (
-                    <p className="text-sm text-gray-600 mb-2">
+                    <p className="text-sm text-slate-300 mb-2">
                       {candidate.summaryBio}
                     </p>
                   )}
@@ -183,7 +213,7 @@ export default function CandidateComparisonTable({
                       href={candidate.websiteUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
                     >
                       Visit Website →
                     </a>
@@ -194,7 +224,7 @@ export default function CandidateComparisonTable({
               {/* Expand/Collapse button */}
               <button
                 onClick={() => toggleCandidate(candidate.id)}
-                className="w-full mt-2 flex items-center justify-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 py-2 border-t border-gray-100"
+                className="w-full mt-2 flex items-center justify-center gap-2 text-sm font-medium text-blue-400 hover:text-blue-300 py-2 border-t border-white/10 transition-colors"
               >
                 {isExpanded ? 'Hide' : 'Show'} Details
                 <svg
@@ -223,9 +253,12 @@ export default function CandidateComparisonTable({
                   return (
                     <div
                       key={issue.slug}
-                      className="p-4 border-b border-gray-50 last:border-b-0"
+                      className="p-4 border-b border-white/10 last:border-b-0"
                     >
-                      <h4 className="font-medium text-gray-900 mb-2">
+                      <h4 className="font-medium text-white mb-2 flex items-center gap-2">
+                        <span className="text-lg">
+                          {getIssueIcon(issue.name)}
+                        </span>
                         {issue.name}
                       </h4>
                       {position ? (
@@ -236,13 +269,13 @@ export default function CandidateComparisonTable({
                             );
                             if (bulletPoints.length <= 1) {
                               return (
-                                <p className="text-sm text-gray-700">
+                                <p className="text-sm text-slate-300">
                                   {position.positionSummary}
                                 </p>
                               );
                             }
                             return (
-                              <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
+                              <ul className="text-sm text-slate-300 space-y-1 list-disc list-inside">
                                 {bulletPoints.map((point, idx) => (
                                   <li key={idx} className="leading-relaxed">
                                     {point}
@@ -256,14 +289,14 @@ export default function CandidateComparisonTable({
                               href={position.evidenceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs text-blue-600 hover:text-blue-800"
+                              className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
                             >
                               Source →
                             </a>
                           )}
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-400 italic">
+                        <p className="text-sm text-slate-400 italic">
                           No position stated
                         </p>
                       )}
@@ -272,18 +305,18 @@ export default function CandidateComparisonTable({
                 })}
 
                 {candidate.endorsements.length > 0 && (
-                  <div className="p-4 bg-gray-50">
-                    <h4 className="font-medium text-gray-900 mb-2">
+                  <div className="p-4 bg-white/5">
+                    <h4 className="font-medium text-white mb-2">
                       Endorsements
                     </h4>
                     <div className="space-y-1">
                       {candidate.endorsements.map((endorsement, idx) => (
                         <div key={idx} className="text-sm">
-                          <span className="font-medium text-gray-700">
+                          <span className="font-medium text-slate-200">
                             {endorsement.endorserName}
                           </span>
                           {endorsement.quote && (
-                            <p className="text-gray-600 italic mt-1">
+                            <p className="text-slate-300 italic mt-1">
                               "{endorsement.quote}"
                             </p>
                           )}
@@ -303,24 +336,30 @@ export default function CandidateComparisonTable({
   // Desktop view: Table
   const DesktopView = () => (
     <div className="hidden md:block overflow-x-auto">
-      <table className="w-full border-collapse bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      <table
+        className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden shadow-2xl"
+        style={{ borderCollapse: 'separate', borderSpacing: 0 }}
+      >
         <thead>
-          <tr className="bg-gray-50">
-            <th className="text-left p-4 font-semibold text-gray-900 border-b border-gray-200 min-w-48">
+          <tr className="bg-white/10">
+            <th className="text-left p-4 font-semibold text-white border-b border-white/20 min-w-48">
               Candidate
             </th>
-            <th className="text-left p-4 font-semibold text-gray-900 border-b border-gray-200 min-w-64">
+            <th className="text-left p-4 font-semibold text-white border-b border-white/20 min-w-64">
               Background
             </th>
             {issues.map((issue) => (
               <th
                 key={issue.slug}
-                className="text-left p-4 font-semibold text-gray-900 border-b border-gray-200 min-w-64"
+                className="text-left p-4 font-semibold text-white border-b border-white/20 min-w-64"
               >
-                {issue.name}
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{getIssueIcon(issue.name)}</span>
+                  {issue.name}
+                </div>
               </th>
             ))}
-            <th className="text-left p-4 font-semibold text-gray-900 border-b border-gray-200 min-w-48">
+            <th className="text-left p-4 font-semibold text-white border-b border-white/20 min-w-48">
               Endorsements
             </th>
           </tr>
@@ -329,9 +368,15 @@ export default function CandidateComparisonTable({
           {candidates.map((candidate, candidateIdx) => (
             <tr
               key={candidate.id}
-              className={candidateIdx % 2 === 0 ? 'bg-white' : 'bg-gray-25'}
+              className={candidateIdx % 2 === 0 ? 'bg-white/2' : 'bg-white/5'}
             >
-              <td className="p-4 border-b border-gray-100 align-top">
+              <td
+                className={`p-4 align-top ${
+                  candidateIdx < candidates.length - 1
+                    ? 'border-b border-white'
+                    : ''
+                }`}
+              >
                 <div className="flex items-start gap-3">
                   {candidate.photoUrl ? (
                     <Image
@@ -342,8 +387,8 @@ export default function CandidateComparisonTable({
                       className="w-12 h-12 rounded-full object-cover flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                      <span className="text-sm font-medium text-gray-600">
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                      <span className="text-sm font-medium text-white">
                         {candidate.fullName
                           .split(' ')
                           .map((n) => n[0])
@@ -353,11 +398,11 @@ export default function CandidateComparisonTable({
                   )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-white">
                         {candidate.fullName}
                       </h3>
                       {candidate.incumbent && (
-                        <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+                        <span className="text-xs px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded-full border border-yellow-400/30">
                           Incumbent
                         </span>
                       )}
@@ -372,12 +417,12 @@ export default function CandidateComparisonTable({
                       </span>
                     </div>
                     {candidate.occupation && (
-                      <p className="text-sm text-gray-600 mb-1">
+                      <p className="text-sm text-slate-300 mb-1">
                         {candidate.occupation}
                       </p>
                     )}
                     {candidate.residenceCity && (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-slate-400">
                         {candidate.residenceCity}
                       </p>
                     )}
@@ -386,7 +431,7 @@ export default function CandidateComparisonTable({
                         href={candidate.websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 text-xs font-medium mt-2 inline-block"
+                        className="text-blue-400 hover:text-blue-300 text-xs font-medium mt-2 inline-block transition-colors"
                       >
                         Website →
                       </a>
@@ -395,15 +440,21 @@ export default function CandidateComparisonTable({
                 </div>
               </td>
 
-              <td className="p-4 border-b border-gray-100 align-top">
+              <td
+                className={`p-4 align-top ${
+                  candidateIdx < candidates.length - 1
+                    ? 'border-b border-white'
+                    : ''
+                }`}
+              >
                 <div className="space-y-2">
                   {candidate.summaryBio && (
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-slate-300">
                       {candidate.summaryBio}
                     </p>
                   )}
                   {!candidate.summaryBio && (
-                    <p className="text-sm text-gray-400 italic">
+                    <p className="text-sm text-slate-400 italic">
                       No background provided
                     </p>
                   )}
@@ -415,7 +466,11 @@ export default function CandidateComparisonTable({
                 return (
                   <td
                     key={issue.slug}
-                    className="p-4 border-b border-gray-100 align-top"
+                    className={`p-4 align-top ${
+                      candidateIdx < candidates.length - 1
+                        ? 'border-b border-white'
+                        : ''
+                    }`}
                   >
                     {position ? (
                       <div className="space-y-2">
@@ -425,13 +480,13 @@ export default function CandidateComparisonTable({
                           );
                           if (bulletPoints.length <= 1) {
                             return (
-                              <p className="text-sm text-gray-700">
+                              <p className="text-sm text-slate-300">
                                 {position.positionSummary}
                               </p>
                             );
                           }
                           return (
-                            <ul className="text-sm text-gray-700 space-y-1 list-disc mb-0">
+                            <ul className="text-sm text-slate-300 space-y-1 list-disc mb-0">
                               {bulletPoints.map((point, idx) => (
                                 <li key={idx} className="">
                                   {point}
@@ -445,14 +500,14 @@ export default function CandidateComparisonTable({
                             href={position.evidenceUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-blue-600 hover:text-blue-800 inline-block"
+                            className="text-xs text-blue-400 hover:text-blue-300 inline-block transition-colors"
                           >
                             Source →
                           </a>
                         )}
                       </div>
                     ) : (
-                      <p className="text-sm text-gray-400 italic">
+                      <p className="text-sm text-slate-400 italic">
                         No position stated
                       </p>
                     )}
@@ -460,31 +515,37 @@ export default function CandidateComparisonTable({
                 );
               })}
 
-              <td className="p-4 border-b border-gray-100 align-top">
+              <td
+                className={`p-4 align-top ${
+                  candidateIdx < candidates.length - 1
+                    ? 'border-b border-white'
+                    : ''
+                }`}
+              >
                 {candidate.endorsements.length > 0 ? (
                   <div className="space-y-2">
                     {candidate.endorsements
                       .slice(0, 3)
                       .map((endorsement, idx) => (
                         <div key={idx} className="text-sm">
-                          <span className="font-medium text-gray-700">
+                          <span className="font-medium text-slate-200">
                             {endorsement.endorserName}
                           </span>
                           {endorsement.quote && (
-                            <p className="text-gray-600 italic text-xs mt-1 line-clamp-2">
+                            <p className="text-slate-300 italic text-xs mt-1 line-clamp-2">
                               "{endorsement.quote}"
                             </p>
                           )}
                         </div>
                       ))}
                     {candidate.endorsements.length > 3 && (
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-slate-400">
                         +{candidate.endorsements.length - 3} more
                       </p>
                     )}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-400 italic">None listed</p>
+                  <p className="text-sm text-slate-400 italic">None listed</p>
                 )}
               </td>
             </tr>
