@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import CityTypeahead from '@/components/search/CityTypeahead';
 import StateDropdown from '@/components/search/StateDropdown';
 import FeaturedElections from '@/components/elections/FeaturedElections';
+import ShareButton from '@/components/shared/ShareButton';
 
 export default function Home() {
   const router = useRouter();
@@ -161,6 +162,28 @@ export default function Home() {
         </div>
 
         <FeaturedElections />
+
+        {/* Footer with Social Sharing */}
+        <footer className="mt-20 pt-12 border-t border-white/10">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-white mb-3">Help Others Stay Informed</h3>
+              <p className="text-slate-300 mb-4">Share this voter guide to help more people make informed decisions</p>
+              <div className="flex justify-center">
+                <ShareButton
+                  url="https://informed-voter.com"
+                  title="Informed Voter - Make Informed Voting Decisions"
+                  description="Access important dates and compare candidates side-by-side for state and local elections."
+                />
+              </div>
+            </div>
+            
+            <div className="text-sm text-slate-500 space-y-2">
+              <p>Nonpartisan • Verified Data Sources • Always Up-to-Date</p>
+              <p>&copy; 2025 Informed Voter. Built to strengthen democracy.</p>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );

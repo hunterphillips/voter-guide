@@ -5,6 +5,7 @@ import useSWR from 'swr'
 import Link from 'next/link'
 import KeyDatesBar from '@/components/elections/KeyDatesBar'
 import CandidateComparisonTable from '@/components/candidates/CandidateComparisonTable'
+import ShareButton from '@/components/shared/ShareButton'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -93,21 +94,41 @@ export default function ElectionPage() {
         </nav>
 
         <header className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <h1 className="text-3xl font-bold text-white">{election.title}</h1>
-            <span className="inline-flex px-3 py-1 text-sm font-medium rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
-              {formatElectionType(election.electionType)}
-            </span>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-white">{election.title}</h1>
+              <span className="inline-flex px-3 py-1 text-sm font-medium rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                {formatElectionType(election.electionType)}
+              </span>
+            </div>
+            
+            <ShareButton
+              title={`${election.title} - ${city.name}, ${city.state}`}
+              description={`Election on ${formatDate(election.electionDate)}. ${election.shortDescription}`}
+              variant="dropdown"
+              className="hidden sm:block"
+            />
           </div>
           
           <p className="text-lg text-slate-300 mb-4">{election.shortDescription}</p>
           
-          <div className="flex items-center gap-6 text-sm text-slate-400">
-            <div>
-              <span className="font-medium">Election Date:</span>
-              <span className="ml-2 text-white font-medium">
-                {formatDate(election.electionDate)}
-              </span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6 text-sm text-slate-400">
+              <div>
+                <span className="font-medium">Election Date:</span>
+                <span className="ml-2 text-white font-medium">
+                  {formatDate(election.electionDate)}
+                </span>
+              </div>
+            </div>
+            
+            {/* Mobile share button */}
+            <div className="sm:hidden">
+              <ShareButton
+                title={`${election.title} - ${city.name}, ${city.state}`}
+                description={`Election on ${formatDate(election.electionDate)}. ${election.shortDescription}`}
+                variant="dropdown"
+              />
             </div>
           </div>
         </header>
