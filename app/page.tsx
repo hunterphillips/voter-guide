@@ -19,63 +19,106 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Voter Guide
-          </h1>
-          <p className="text-xl text-gray-600 mb-12">
-            Find upcoming elections and compare candidates in your area
-          </p>
-          
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+      <div className="container mx-auto px-4 py-20">
+        {/* Modern Hero Section */}
+        <div className="max-w-5xl mx-auto text-center mb-20">
           <div className="mb-8">
-            <div className="flex justify-center mb-6">
-              <div className="bg-white rounded-lg p-1 shadow-sm border border-gray-200">
-                <button
-                  onClick={() => setSearchMode('city')}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                    searchMode === 'city'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  Search by City
-                </button>
-                <button
-                  onClick={() => setSearchMode('state')}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                    searchMode === 'state'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  Browse by State
-                </button>
+            <div className="inline-flex items-center px-4 py-2 bg-blue-600/10 border border-blue-500/20 rounded-full mb-6">
+              <div className="w-2 h-2 bg-blue-400 rounded-full mr-3 animate-pulse"></div>
+              <span className="text-blue-300 text-sm font-medium">Trusted Election Information</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+              Make Informed
+              <span className="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Voting Decisions
+              </span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Access comprehensive candidate information, election dates, and voting guides 
+              for your local elections in one trusted platform.
+            </p>
+            
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap justify-center items-center gap-8 mb-12 text-slate-400 text-sm">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                Verified Data Sources
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+                Nonpartisan Information
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+                </svg>
+                Always Up-to-Date
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-2xl">
+            <h2 className="text-2xl font-semibold text-white mb-6 text-center">
+              Find Your Elections
+            </h2>
+          
+            <div className="mb-8">
+              <div className="flex justify-center mb-6">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-1 border border-white/20">
+                  <button
+                    onClick={() => setSearchMode('city')}
+                    className={`px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      searchMode === 'city'
+                        ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                        : 'text-slate-300 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    Search by City
+                  </button>
+                  <button
+                    onClick={() => setSearchMode('state')}
+                    className={`px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      searchMode === 'state'
+                        ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                        : 'text-slate-300 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    Browse by State
+                  </button>
+                </div>
+              </div>
+              
+              <div className="flex justify-center">
+                {searchMode === 'city' ? (
+                  <CityTypeahead 
+                    onCitySelect={handleCitySelect}
+                    placeholder="Enter your city name..."
+                  />
+                ) : (
+                  <div className="relative">
+                    <StateDropdown onStateSelect={handleStateSelect} />
+                  </div>
+                )}
               </div>
             </div>
             
-            <div className="flex justify-center">
-              {searchMode === 'city' ? (
-                <CityTypeahead 
-                  onCitySelect={handleCitySelect}
-                  placeholder="Enter your city name..."
-                />
-              ) : (
-                <div className="relative">
-                  <StateDropdown onStateSelect={handleStateSelect} />
-                </div>
-              )}
+            <div className="text-sm text-slate-400 text-center">
+              <p>
+                {searchMode === 'city' 
+                  ? 'Search for your city to see upcoming elections and candidate information'
+                  : 'Select a state to browse all upcoming elections in that state'
+                }
+              </p>
             </div>
-          </div>
-          
-          <div className="text-sm text-gray-500">
-            <p>
-              {searchMode === 'city' 
-                ? 'Search for your city to see upcoming elections and candidate information'
-                : 'Select a state to browse all upcoming elections in that state'
-              }
-            </p>
           </div>
         </div>
 
