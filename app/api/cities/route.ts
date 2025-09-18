@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { searchRateLimit, getClientIP, createRateLimitResponse } from '@/lib/ratelimit'
 
 export async function GET(request: NextRequest) {
   try {
+    // Rate limiting
+    const ip = getClientIP(request)
+    const { success } = await searchRateLimit.limit(ip)
+    
+    if (!success) {
+      return createRateLimitResponse()
+    }
     const searchParams = request.nextUrl.searchParams
     const q = searchParams.get('q')
     const state = searchParams.get('state')
