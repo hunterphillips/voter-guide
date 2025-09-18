@@ -167,8 +167,13 @@ export default function Home() {
         <footer className="mt-20 pt-12 border-t border-white/10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-3">Help Others Stay Informed</h3>
-              <p className="text-slate-300 mb-4">Share this voter guide to help more people make informed decisions</p>
+              <h3 className="text-lg font-semibold text-white mb-3">
+                Help Others Stay Informed
+              </h3>
+              <p className="text-slate-300 mb-4">
+                Share this voter guide to help more people make informed
+                decisions
+              </p>
               <div className="flex justify-center">
                 <ShareButton
                   url="https://informed-voter.com"
@@ -177,9 +182,8 @@ export default function Home() {
                 />
               </div>
             </div>
-            
+
             <div className="text-sm text-slate-500 space-y-2">
-              <p>Nonpartisan • Verified Data Sources • Always Up-to-Date</p>
               <p>&copy; 2025 Informed Voter. Built to strengthen democracy.</p>
             </div>
           </div>
