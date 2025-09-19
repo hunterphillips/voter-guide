@@ -21,19 +21,6 @@ function getBooleanEnvVar(name: string, defaultValue: boolean = false): boolean 
   return value.toLowerCase() === 'true'
 }
 
-function getNumberEnvVar(name: string, defaultValue: number): number {
-  const value = process.env[name]
-  
-  if (!value) return defaultValue
-  
-  const parsed = parseInt(value, 10)
-  
-  if (isNaN(parsed)) {
-    throw new Error(`Invalid number for environment variable ${name}: ${value}`)
-  }
-  
-  return parsed
-}
 
 // Environment configuration
 export const ENV = {
