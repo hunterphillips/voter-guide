@@ -116,7 +116,7 @@ export default function Home() {
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-1 border border-white/20">
                   <button
                     onClick={() => setSearchMode('city')}
-                    className={`px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    className={`w-full xs:w-auto px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                       searchMode === 'city'
                         ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
                         : 'text-slate-300 hover:text-white hover:bg-white/10'
@@ -126,7 +126,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={() => setSearchMode('state')}
-                    className={`px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    className={`w-full xs:w-auto px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                       searchMode === 'state'
                         ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
                         : 'text-slate-300 hover:text-white hover:bg-white/10'
@@ -176,7 +176,6 @@ export default function Home() {
               </p>
               <div className="flex justify-center">
                 <ShareButton
-                  url="https://informed-voter.com"
                   title="Informed Voter - Make Informed Voting Decisions"
                   description="Access important dates and compare candidates side-by-side for state and local elections."
                 />
@@ -184,7 +183,7 @@ export default function Home() {
             </div>
 
             <div className="text-sm text-slate-500 space-y-2">
-              <p>&copy; 2025 Informed Voter. Built to strengthen democracy.</p>
+              <p>&copy; 2025 Informed Voter. All rights reserved.</p>
             </div>
           </div>
         </footer>

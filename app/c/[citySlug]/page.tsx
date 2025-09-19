@@ -3,7 +3,10 @@
 import { useParams } from 'next/navigation'
 import useSWR from 'swr'
 import Link from 'next/link'
+import Head from 'next/head'
 import ElectionList from '@/components/elections/ElectionList'
+import { generateCityStructuredData, generateBreadcrumbStructuredData } from '@/lib/structured-data'
+import { APP_CONFIG } from '@/lib/config'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -52,8 +55,35 @@ export default function CityPage() {
     )
   }
 
+  const structuredData = generateCityStructuredData(data.city, data.items)
+  const breadcrumbItems = [
+    { name: 'Home', url: APP_CONFIG.baseUrl },
+    { name: `${data.city.name}, ${data.city.state}`, url: `${APP_CONFIG.baseUrl}/c/${citySlug}` }
+  ]
+  const breadcrumbData = generateBreadcrumbStructuredData(breadcrumbItems)
+
+  // Enhanced SEO metadata
+  const electionCount = data.items.length
+  const currentYear = new Date().getFullYear()
+  const seoTitle = `${data.city.name} Elections ${currentYear} - Voting Guide & Candidate Info | ${data.city.state}`
+  const seoDescription = `Find ${electionCount} upcoming election${electionCount !== 1 ? 's' : ''} in ${data.city.name}, ${data.city.state}. Access important dates, candidate information, and voting guides for state and local elections.`
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+    <>
+      <Head>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={`${APP_CONFIG.baseUrl}/c/${citySlug}`} />
+        <script 
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        <script 
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+        />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <nav className="mb-4">
@@ -76,6 +106,7 @@ export default function CityPage() {
           elections={data.items}
         />
       </div>
-    </div>
+      </div>
+    </>
   )
 }
