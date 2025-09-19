@@ -3,6 +3,8 @@
 import { useParams } from 'next/navigation'
 import useSWR from 'swr'
 import Link from 'next/link'
+import Head from 'next/head'
+import { APP_CONFIG } from '@/lib/config'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -74,8 +76,20 @@ export default function StatePage() {
 
   const elections = data.items || []
 
+  // Enhanced SEO metadata
+  const electionCount = elections.length
+  const currentYear = new Date().getFullYear()
+  const seoTitle = `${data.state.name} Elections ${currentYear} - Complete Voting Guide | Informed Voter`
+  const seoDescription = `Find all ${electionCount} upcoming election${electionCount !== 1 ? 's' : ''} in ${data.state.name}. Complete voting guide with candidate information, election dates, and voting locations across the state.`
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+    <>
+      <Head>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={`${APP_CONFIG.baseUrl}/s/${stateCode}`} />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <nav className="mb-4">
@@ -183,6 +197,7 @@ export default function StatePage() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   )
 }

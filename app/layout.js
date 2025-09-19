@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import { APP_CONFIG } from '@/lib/config';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -12,29 +13,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'Informed Voter',
-  description: 'Access important dates and compare candidates side-by-side for state and local elections.',
+  title: APP_CONFIG.siteName,
+  description: APP_CONFIG.description,
+  metadataBase: new URL(APP_CONFIG.baseUrl),
+  alternates: {
+    canonical: APP_CONFIG.baseUrl,
+  },
   openGraph: {
-    title: 'Informed Voter - Make Informed Voting Decisions',
-    description: 'Access important dates and compare candidates side-by-side for state and local elections.',
-    url: 'https://informed-voter.com',
-    siteName: 'Informed Voter',
-    images: [
-      {
-        url: 'https://informed-voter.com/voter-guide-hero.png',
-        width: 1200,
-        height: 630,
-        alt: 'Informed Voter - Make Informed Voting Decisions',
-      },
-    ],
+    title: APP_CONFIG.title,
+    description: APP_CONFIG.description,
+    url: APP_CONFIG.baseUrl,
+    siteName: APP_CONFIG.siteName,
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Informed Voter - Make Informed Voting Decisions',
-    description: 'Access important dates and compare candidates side-by-side for state and local elections.',
-    images: ['https://informed-voter.com/voter-guide-hero.png'],
+    card: 'summary',
+    title: APP_CONFIG.title,
+    description: APP_CONFIG.description,
   },
   robots: {
     index: true,

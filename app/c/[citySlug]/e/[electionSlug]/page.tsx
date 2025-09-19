@@ -3,9 +3,12 @@
 import { useParams } from 'next/navigation'
 import useSWR from 'swr'
 import Link from 'next/link'
+import Head from 'next/head'
 import KeyDatesBar from '@/components/elections/KeyDatesBar'
 import CandidateComparisonTable from '@/components/candidates/CandidateComparisonTable'
 import ShareButton from '@/components/shared/ShareButton'
+import { generateElectionStructuredData, generateBreadcrumbStructuredData } from '@/lib/structured-data'
+import { APP_CONFIG } from '@/lib/config'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -70,8 +73,37 @@ export default function ElectionPage() {
 
   const { city, election, issues, candidates } = data
 
+  const electionWithRelations = { ...election, city, candidates }
+  const structuredData = generateElectionStructuredData(electionWithRelations)
+  const breadcrumbItems = [
+    { name: 'Home', url: APP_CONFIG.baseUrl },
+    { name: `${city.name}, ${city.state}`, url: `${APP_CONFIG.baseUrl}/c/${citySlug}` },
+    { name: election.title, url: `${APP_CONFIG.baseUrl}/c/${citySlug}/e/${electionSlug}` }
+  ]
+  const breadcrumbData = generateBreadcrumbStructuredData(breadcrumbItems)
+
+  // Enhanced SEO metadata
+  const candidateCount = candidates.length
+  const electionYear = new Date(election.electionDate).getFullYear()
+  const seoTitle = `${electionYear} ${election.title} - Candidates & Voting Info | ${city.name}, ${city.state}`
+  const seoDescription = `Compare ${candidateCount} candidate${candidateCount !== 1 ? 's' : ''} for the ${election.title} on ${formatDate(election.electionDate)}. Find voting dates, candidate positions, and election information for ${city.name}, ${city.state}.`
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+    <>
+      <Head>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={`${APP_CONFIG.baseUrl}/c/${citySlug}/e/${electionSlug}`} />
+        <script 
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        <script 
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+        />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-8">
         <nav className="mb-6">
           <div className="flex items-center gap-2 text-sm">
@@ -158,6 +190,7 @@ export default function ElectionPage() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
