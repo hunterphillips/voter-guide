@@ -24,10 +24,10 @@ function createRateLimit(maxRequests: number, windowMs: number) {
 }
 
 // Rate limiter for search endpoints (stricter)
-export const searchRateLimit = createRateLimit(30, 60000) // 30 requests per minute
+export const searchRateLimit = createRateLimit(100, 60000) // 100 requests per minute
 
 // Rate limiter for general API endpoints
-export const apiRateLimit = createRateLimit(60, 60000) // 60 requests per minute
+export const apiRateLimit = createRateLimit(200, 60000) // 200 requests per minute
 
 // Helper function to get client IP
 export function getClientIP(request: Request): string {

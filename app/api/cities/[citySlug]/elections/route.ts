@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { apiRateLimit, getClientIP, createRateLimitResponse } from '@/lib/ratelimit'
+import { validateCitySlug, handleValidationError } from '@/lib/validation'
 
 export async function GET(
   request: NextRequest,
@@ -15,6 +16,10 @@ export async function GET(
       return createRateLimitResponse()
     }
     const { citySlug } = await params
+    
+    // Validate citySlug parameter
+    validateCitySlug(citySlug)
+    
     const searchParams = request.nextUrl.searchParams
     const includePast = searchParams.get('includePast') === 'true'
     
@@ -87,10 +92,15 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('Elections API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Handle validation errors
+    try {
+      return handleValidationError(error)
+    } catch {
+      console.error('Elections API error:', error)
+      return NextResponse.json(
+        { error: 'Internal server error' },
+        { status: 500 }
+      )
+    }
   }
 }

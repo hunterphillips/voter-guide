@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { apiRateLimit, getClientIP, createRateLimitResponse } from '@/lib/ratelimit'
+import { validateStateCode, handleValidationError } from '@/lib/validation'
 
 export async function GET(
   request: NextRequest,
@@ -15,15 +16,12 @@ export async function GET(
       return createRateLimitResponse()
     }
     const { stateCode } = await params
+    
+    // Validate state code parameter
+    validateStateCode(stateCode)
+    
     const searchParams = request.nextUrl.searchParams
     const includePast = searchParams.get('includePast') === 'true'
-    
-    if (!stateCode || stateCode.length !== 2) {
-      return NextResponse.json(
-        { error: 'Invalid state code' },
-        { status: 400 }
-      )
-    }
 
     const today = new Date()
     const whereClause: any = {
@@ -95,11 +93,16 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('State elections API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Handle validation errors
+    try {
+      return handleValidationError(error)
+    } catch {
+      console.error('State elections API error:', error)
+      return NextResponse.json(
+        { error: 'Internal server error' },
+        { status: 500 }
+      )
+    }
   }
 }
 
