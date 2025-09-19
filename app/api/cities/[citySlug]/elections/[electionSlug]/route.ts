@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { apiRateLimit, getClientIP, createRateLimitResponse } from '@/lib/ratelimit'
+import { validateCitySlug, validateElectionSlug, handleValidationError } from '@/lib/validation'
 
 export async function GET(
   request: NextRequest,
@@ -15,6 +16,10 @@ export async function GET(
       return createRateLimitResponse()
     }
     const { citySlug, electionSlug } = await params
+    
+    // Validate parameters
+    validateCitySlug(citySlug)
+    validateElectionSlug(electionSlug)
     const city = await prisma.city.findUnique({
       where: { slug: citySlug, isActive: true },
       select: {
@@ -131,10 +136,15 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('Election detail API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Handle validation errors
+    try {
+      return handleValidationError(error)
+    } catch {
+      console.error('Election detail API error:', error)
+      return NextResponse.json(
+        { error: 'Internal server error' },
+        { status: 500 }
+      )
+    }
   }
 }

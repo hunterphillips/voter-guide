@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { searchRateLimit, getClientIP, createRateLimitResponse } from '@/lib/ratelimit'
+import { validateSearchQuery, generateSearchVariations, getQueryParam, handleValidationError } from '@/lib/validation'
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,20 +12,33 @@ export async function GET(request: NextRequest) {
     if (!success) {
       return createRateLimitResponse()
     }
-    const searchParams = request.nextUrl.searchParams
-    const q = searchParams.get('q')
-    const state = searchParams.get('state')
+    // Input validation
+    const q = getQueryParam(request, 'q')
+    const state = getQueryParam(request, 'state')
 
-    if (!q || q.trim().length < 2) {
+    if (!q) {
       return NextResponse.json({ items: [], total: 0 })
+    }
+
+    const normalizedQuery = validateSearchQuery(q)
+    const searchVariations = generateSearchVariations(normalizedQuery)
+
+    // Validate state if provided
+    if (state && (state.length !== 2 || !/^[A-Za-z]{2}$/.test(state))) {
+      return NextResponse.json(
+        { error: 'Invalid state format' },
+        { status: 400 }
+      )
     }
 
     const whereClause: any = {
       isActive: true,
-      name: {
-        contains: q.trim(),
-        mode: 'insensitive',
-      },
+      OR: searchVariations.map(variation => ({
+        name: {
+          contains: variation,
+          mode: 'insensitive',
+        }
+      })),
     }
 
     if (state) {
@@ -57,10 +71,15 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Cities API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Handle validation errors
+    try {
+      return handleValidationError(error)
+    } catch {
+      console.error('Cities API error:', error)
+      return NextResponse.json(
+        { error: 'Internal server error' },
+        { status: 500 }
+      )
+    }
   }
 }

@@ -19,11 +19,21 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function CityTypeahead({ onCitySelect, placeholder = "Search for your city..." }: CityTypeaheadProps) {
   const [query, setQuery] = useState('')
+  const [debouncedQuery, setDebouncedQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
+  // Debounce the search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query)
+    }, 300) // 300ms delay
+
+    return () => clearTimeout(timer)
+  }, [query])
+
   const { data, error, isLoading } = useSWR(
-    query.length >= 2 ? `/api/cities?q=${encodeURIComponent(query)}` : null,
+    debouncedQuery.length >= 2 ? `/api/cities?q=${encodeURIComponent(debouncedQuery)}` : null,
     fetcher,
     {
       dedupingInterval: 300,
@@ -99,7 +109,7 @@ export default function CityTypeahead({ onCitySelect, placeholder = "Search for 
           aria-haspopup="listbox"
           role="combobox"
         />
-        {isLoading && query.length >= 2 && (
+        {isLoading && debouncedQuery.length >= 2 && (
           <div className="absolute right-3 top-3">
             <div className="animate-spin h-6 w-6 border-2 border-gray-300 border-t-blue-500 rounded-full"></div>
           </div>
@@ -114,7 +124,7 @@ export default function CityTypeahead({ onCitySelect, placeholder = "Search for 
             </div>
           )}
           
-          {!error && cities.length === 0 && !isLoading && query.length >= 2 && (
+          {!error && cities.length === 0 && !isLoading && debouncedQuery.length >= 2 && (
             <div className="px-4 py-3 text-gray-500">
               No cities found for "{query}"
             </div>
