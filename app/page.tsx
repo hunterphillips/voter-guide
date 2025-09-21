@@ -184,6 +184,17 @@ export default function Home() {
 
             <div className="text-sm text-slate-500 space-y-2">
               <p>&copy; 2025 Informed Voter. All rights reserved.</p>
+              <p>
+                Like this project?{' '}
+                <a
+                  href="https://ko-fi.com/hunterphillipsdev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                >
+                  Support development ☕
+                </a>
+              </p>
             </div>
           </div>
         </footer>
