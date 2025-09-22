@@ -53,8 +53,7 @@ export default function Home() {
             </div> */}
 
             <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Access important dates and compare candidates side-by-side for
-              state and local elections.
+              Find key election dates and compare candidates side-by-side.
             </p>
 
             {/* Trust Indicators */}
@@ -168,7 +167,7 @@ export default function Home() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-white mb-3">
-                Help Others Stay Informed
+                Keep Others in the Loop
               </h3>
               <p className="text-slate-300 mb-4">
                 Share this voter guide to help more people make informed
