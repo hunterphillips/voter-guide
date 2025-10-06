@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { formatPositionText } from '@/lib/textUtils';
 
@@ -93,6 +93,60 @@ function getIssueIcon(issueName: string): string {
     iconMap.find(({ keywords }) =>
       keywords.some((keyword) => name.includes(keyword))
     )?.icon ?? '📋'
+  );
+}
+
+interface ScrollArrowProps {
+  direction: 'left' | 'right';
+  onClick: () => void;
+  onMouseEnter: () => void;
+  scrollContainerRef: React.RefObject<HTMLDivElement>;
+  hoveredRow: string;
+}
+
+function ScrollArrow({ direction, onClick, onMouseEnter, scrollContainerRef, hoveredRow }: ScrollArrowProps) {
+  const getPosition = () => {
+    if (!scrollContainerRef.current) return { left: '12px', top: '50%' };
+
+    const containerRect = scrollContainerRef.current.getBoundingClientRect();
+    const rowElement = scrollContainerRef.current.querySelector(`tr[data-candidate-id="${hoveredRow}"]`);
+
+    const left = direction === 'left'
+      ? `${containerRect.left + 12}px`
+      : `${containerRect.right - 52}px`;
+
+    const top = rowElement
+      ? `${rowElement.getBoundingClientRect().top + rowElement.getBoundingClientRect().height / 2}px`
+      : '50%';
+
+    return { left, top };
+  };
+
+  const position = getPosition();
+  const arrowPath = direction === 'left' ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7';
+
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      className="fixed bg-black/80 hover:bg-black text-white p-2.5 rounded-full shadow-2xl transition-opacity z-50"
+      style={position}
+      aria-label={`Scroll ${direction}`}
+    >
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={3}
+          d={arrowPath}
+        />
+      </svg>
+    </button>
   );
 }
 
@@ -316,12 +370,61 @@ export default function CandidateComparisonTable({
   );
 
   // Desktop view: Table
-  const DesktopView = () => (
-    <div className="hidden md:block overflow-x-auto">
-      <table
-        className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden shadow-2xl"
-        style={{ borderCollapse: 'separate', borderSpacing: 0 }}
-      >
+  const DesktopView = () => {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+
+    const updateScrollState = () => {
+      if (scrollContainerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+        setCanScrollLeft(scrollLeft > 10);
+        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+      }
+    };
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        updateScrollState();
+      }, 100);
+
+      window.addEventListener('resize', updateScrollState);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('resize', updateScrollState);
+      };
+    }, []);
+
+    const handleScroll = (direction: 'left' | 'right') => {
+      if (!scrollContainerRef.current) return;
+
+      const container = scrollContainerRef.current;
+      const scrollAmount = 350;
+      const targetScrollLeft = direction === 'left'
+        ? container.scrollLeft - scrollAmount
+        : container.scrollLeft + scrollAmount;
+
+      container.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+
+      // Update state after animation
+      setTimeout(updateScrollState, 300);
+    };
+
+    return (
+      <div className="hidden md:block relative">
+        <div
+          ref={scrollContainerRef}
+          onScroll={updateScrollState}
+          className="overflow-x-auto"
+        >
+          <table
+            className="w-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden shadow-2xl"
+            style={{ borderCollapse: 'separate', borderSpacing: 0 }}
+          >
         <thead>
           <tr className="bg-white/10">
             <th className="text-left p-4 font-semibold text-white border-b border-white/20 min-w-48">
@@ -350,7 +453,10 @@ export default function CandidateComparisonTable({
           {candidates.map((candidate, candidateIdx) => (
             <tr
               key={candidate.id}
-              className={candidateIdx % 2 === 0 ? 'bg-white/2' : 'bg-white/5'}
+              data-candidate-id={candidate.id}
+              className={`relative group/row ${candidateIdx % 2 === 0 ? 'bg-white/2' : 'bg-white/5'}`}
+              onMouseEnter={() => setHoveredRow(candidate.id)}
+              onMouseLeave={() => setHoveredRow(null)}
             >
               <td
                 className={`p-4 align-top ${
@@ -535,7 +641,33 @@ export default function CandidateComparisonTable({
         </tbody>
       </table>
     </div>
-  );
+
+    {/* Scroll arrows positioned outside table, aligned to hovered row */}
+    {hoveredRow && (
+      <>
+        {canScrollLeft && (
+          <ScrollArrow
+            direction="left"
+            onClick={() => handleScroll('left')}
+            onMouseEnter={() => setHoveredRow(hoveredRow)}
+            scrollContainerRef={scrollContainerRef}
+            hoveredRow={hoveredRow}
+          />
+        )}
+        {canScrollRight && (
+          <ScrollArrow
+            direction="right"
+            onClick={() => handleScroll('right')}
+            onMouseEnter={() => setHoveredRow(hoveredRow)}
+            scrollContainerRef={scrollContainerRef}
+            hoveredRow={hoveredRow}
+          />
+        )}
+      </>
+    )}
+  </div>
+    );
+  };
 
   return (
     <div className="mb-8">
